@@ -1,3 +1,5 @@
+/* 무작정 코드만 쓰지 말고, 직접 케이스 나눠보면서 상황 분석하기 */
+
 const input = require('fs').readFileSync('/dev/stdin').toString().split('\n');
 const [wheelNum, rotateNum] = input[0].split(' ').map(Number);
 const wheel = new Array(wheelNum);
