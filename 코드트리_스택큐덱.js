@@ -44,3 +44,37 @@ for(let i=0; i<str.length; i++){
 }
 
 stack2.length ? console.log('No') : console.log('Yes');
+
+/* 원형 순열에서의 인원 제거 */
+const input3 = require("fs").readFileSync(0).toString().trim().split('\n');
+const [total, target] = input3[0].split(" ");
+const currentLine = [];
+let answer ='';
+
+for(let i=1; i<=total; i++){
+    currentLine.push(i);
+}
+
+while(currentLine.length !== 0){
+    for(let i=0; i<target-1; i++){
+        currentLine.push(currentLine.shift());
+    }
+    answer = answer+currentLine.shift()+' ';
+}
+console.log(answer);
+
+/* 수열 조작 */
+const input4 = require("fs").readFileSync(0).toString().trim().split('\n');
+const length = Number(input4[0].split(" "));
+const arr = [];
+
+for(let i=1; i<=length; i++){
+    arr.push(i);
+}
+
+while (arr.length > 1){
+    arr.shift();
+    arr.push(arr.shift());
+}
+
+console.log(arr[0]);
