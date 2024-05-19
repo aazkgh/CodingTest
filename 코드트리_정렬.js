@@ -1,6 +1,6 @@
 const input = require("fs").readFileSync(0).toString().trim().split('\n');
 const total = Number(input[0]);
-const number = input[1].split(" ");
+const number = input[1].split(" ").map(Number);
 
 /* 거품 정렬 구현 */
 function bubble_sort(total, number){
@@ -21,7 +21,7 @@ function selection_sort(total, number){
     for(let j=0; j<total-1; j++){
         let minIdx = j;
         for(let i=j+1; i<total; i++){
-            if (Number(number[i])<Number(number[minIdx])){
+            if (number[i]<number[minIdx]){
                 minIdx = i;
             }
         }
@@ -45,8 +45,8 @@ function insertion_sort(total, number){
     return number.join(" ");
 }
 
-/* 기수 정렬 구현 */
-const maxK = 6; // 최대 자릿수
+/* 기수 정렬 구현: 복습 */
+const maxK = 6;
 const maxDigit = 10; // 0부터 9까지의 숫자
 
 function radix_sort(number){
@@ -66,6 +66,65 @@ function radix_sort(number){
     return answer; // 정렬된 배열 반환
 }
 
+/* 병합 정렬 구현 */
+function merge_sort(arr, low, high){
+    let target = [];
+    if(low < high){         
+        const mid = Math.floor((low+high)/2);
+        const arr1 = merge_sort(arr,low,mid);
+        const arr2 = merge_sort(arr,mid+1,high);
+        target = merge(arr1, arr2);
+    }
+    else target.push(arr[low]);
+    
+    return target;
+}
 
-console.log(radix_sort(total,number));
+function merge(lowArr, highArr){
+    const newArr = [];
+    let l = 0;
+    let h = 0;
+    while(l<lowArr.length && h<highArr.length){
+        if(lowArr[l]<=highArr[h]){
+            newArr.push(lowArr[l]);
+            l++;
+        }else{
+            newArr.push(highArr[h]);
+            h++;
+        }
+    }
+
+    return newArr.concat(lowArr.slice(l)).concat(highArr.slice(h));
+}
+
+merge_sort(number, 0, number.length-1).join(" ");
+
+/* 퀵 정렬 구현 */
+function quick_divide(arr, low, high){
+    const pivot = high;
+
+    let i = low;
+    let j = high-1; 
+    while(i<=j){
+        while(i<=j && arr[i]<=arr[pivot]) i++;
+        while(i<=j && arr[j]>arr[pivot]) j--;
+
+        if(i<j){
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+    }
+    [arr[i], arr[high]] = [arr[high], arr[i]];
+    return i;
+}
+
+function quick_sort(arr, low, high){
+    if(low<high){
+        const pos = quick_divide(arr,low,high);
+
+        quick_sort(arr,low, pos-1);
+        quick_sort(arr, pos+1, high);
+    }
+}
+
+quick_sort(number, 0 , total-1)
 
