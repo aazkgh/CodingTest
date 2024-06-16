@@ -27,8 +27,32 @@ function solution(m, n, puddles) {
     return dp[m - 1][n - 1];
 }
 
-/* lv3. N으로 표현 */
-
+/* lv3. N으로 표현 - 솔루션 참고 */
+function solution(N, number) {
+    var answer = 0;
+    var use = Array.from(new Array(9), () => new Set());
+    if(N==number) return 1;
+    else {
+        use.forEach((element, index) => {
+            if (index !== 0) element.add(Number(String(N).repeat(index)));
+        });
+        for(var i=1 ; i<=8 ; ++i) {
+            for(var j=1 ; j<i ; ++j) {
+                for(var first of use[j]) {
+                    for(var second of use[i-j]) {
+                        use[i].add(first+second);
+                        use[i].add(first-second);
+                        use[i].add(first*second);
+                        use[i].add(first/second);
+                    }
+                } 
+            }
+            if(use[i].has(number)) return i;
+        }
+        return -1;
+    }
+    return answer;
+}
 
 /* lv3. 정수 삼각형 */
 function solution(triangle) {
