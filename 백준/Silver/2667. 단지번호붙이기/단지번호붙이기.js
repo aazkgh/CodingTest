@@ -1,47 +1,41 @@
-const input = require("fs")
-  .readFileSync("/dev/stdin")
-  .toString()
-  .trim()
-  .split("\n");
+const fs = require('fs');
+const [N, ...input] = fs.readFileSync('/dev/stdin').toString().trim().split('\n');
 
-const N = Number(input.shift());
-
-const map = input.map((row) => row.split("").map(Number));
-const visited = Array.from(Array(N), () => Array(N).fill(false));
-
-//상하좌우
-const dx = [0, 0, -1, 1];
-const dy = [-1, 1, 0, 0];
-
-let count_home = 0;
-let count_complex = 0;
-const answer = [];
-
-const dfs = (x, y) => {
-  if (map[x][y] === 1 && visited[x][y] === false) {
-    visited[x][y] = true;
-    count_home++;
-
-    for (let i = 0; i < 4; i++) {
-      const [newX, newY] = [x + dx[i], y + dy[i]];
-      if (newX >= 0 && newX < N && newY >= 0 && newY < N) {
-        dfs(newX, newY);
-      }
+let apt = Array.from({ length: N + 1 }, () => new Array(N + 1).fill(0));
+for (let i = 1; i <= N; i++) {
+    let arr = input[i - 1].split('').map(Number);
+    for (let j = 0; j < arr.length; j++) {
+        apt[i][j + 1] = arr[j];
     }
-  }
-};
-
-for (let i = 0; i < N; i++) {
-  for (let j = 0; j < N; j++) {
-    if (map[i][j] === 1 && visited[i][j] === false) {
-      dfs(i, j);
-      count_complex++;
-      answer.push(count_home);
-      count_home = 0;
-    }
-  }
 }
 
-console.log(
-  count_complex + "\n" + `${answer.sort((a, b) => a - b).join("\n")}`
-);
+let visited = Array.from({ length: N + 1 }, () => new Array(N + 1).fill(false));
+let counts = [];
+
+function search(c, r) {
+    if (c < 1 || c > N || r < 1 || r > N || visited[c][r] || apt[c][r] === 0) {
+        return 0;
+    }
+
+    visited[c][r] = true;
+    let count = 1; // 현재 집을 포함
+
+    count += search(c, r - 1);
+    count += search(c, r + 1);
+    count += search(c - 1, r);
+    count += search(c + 1, r);
+
+    return count;
+}
+
+for (let i = 1; i <= N; i++) {
+    for (let j = 1; j <= N; j++) {
+        if (apt[i][j] === 1 && !visited[i][j]) {
+            counts.push(search(i, j));
+        }
+    }
+}
+
+counts.sort((a, b) => a - b);
+console.log(counts.length);
+counts.forEach(count => console.log(count));
