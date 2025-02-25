@@ -11,7 +11,10 @@ for(let i=1; i<input.length; i++){
 
 let answer = [];
 
+//인자수는 그냥 편하게 늘리기
 function track(v, visited, target){
+    /* 재귀함수 사용시, 분기와 반환값을 처음에 설정하여
+       이를 활용할 수 있게 만들기 */ 
     if(visited[v]) return false;
     if(v === target) return true;
 
