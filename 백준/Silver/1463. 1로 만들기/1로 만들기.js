@@ -1,23 +1,20 @@
-const input = require('fs').readFileSync('/dev/stdin').toString();
-const X = Number(input);
+const fs = require('fs');
+const input = fs.readFileSync('/dev/stdin').toString().trim();
 
-function dp(n) {
-    let memo = new Array(n + 1).fill(Infinity);
-    memo[1] = 0; 
+const N = Number(input);
 
-    for (let i = 2; i <= n; i++) {
-        memo[i] = memo[i - 1] + 1;
-
-        if (i % 3 === 0) {
-            memo[i] = Math.min(memo[i], memo[i / 3] + 1);
-        }
-
-        if (i % 2 === 0) {
-            memo[i] = Math.min(memo[i], memo[i / 2] + 1);
-        }
+let dp = new Array(N+1).fill(Infinity);
+dp[1] = 0;
+for (let i=2; i<=N; i++){
+    dp[i] = dp[i-1] + 1;
+    
+    if(i%2 === 0){
+        dp[i] = Math.min(dp[i], dp[i/2] + 1)
     }
-
-    return memo[n];
+    
+    if(i%3=== 0){
+        dp[i] = Math.min(dp[i], dp[i/3] + 1)
+    }
 }
-
-console.log(dp(X));
+                                         
+console.log(dp[N]);
