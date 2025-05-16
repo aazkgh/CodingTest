@@ -1,18 +1,16 @@
-const fs = require('fs');
-
-let [n, ...input] = fs.readFileSync('dev/stdin').toString().trim().split('\n');
+let [n, ...input] = require('fs').readFileSync('/dev/stdin').toString().trim().split('\n');
 input = input.map(Number);
+const MAX_TARGET = Math.max(...input);
 
-const occation = [0];
+const dp = new Array(MAX_TARGET + 1);
+dp[1] = 1;
+dp[2] = 2;
+dp[3] = 4;
 
-occation[1] = 1;
-occation[2] = 2;
-occation[3] = 4;
-
-for (let i = 4; i <= Math.max(...input); i++) {
-  occation[i] = occation[i - 3] + occation[i - 2] + occation[i - 1];
+for(let i = 4; i <= MAX_TARGET; i ++) {
+    dp[i] = dp[i - 1] + dp[i - 2] + dp[i - 3];
 }
 
-input.forEach((v) => {
-  console.log(occation[v]);
-});
+for(let i = 0; i <n; i++) {
+    console.log(dp[input[i]]);
+}
