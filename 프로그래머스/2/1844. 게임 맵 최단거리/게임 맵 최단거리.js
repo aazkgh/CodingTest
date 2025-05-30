@@ -5,6 +5,7 @@ function solution(maps) {
     
     const move = [[1, 0], [0, 1], [-1, 0], [0, -1]];
     let answer = 0;
+    //queue에 저장할 때, 현재 위치와 현재 이동거리를 함께 저장
     let queue = [];
     queue.push([0, 0, 1]);
     visited[0][0] = true;
@@ -28,6 +29,6 @@ function solution(maps) {
             }
         }
     }
-    
+    //queue를 다 돌았는데도 최단 거리를 구하지 못했다면 도달하지 못함
     return -1;
 }
