@@ -1,50 +1,56 @@
 function solution(n, k, expected) {
-    const LIMIT = 10000;
+    const result = new Map();
+    const visited = new Array(n).fill(false);
 
-    const dp = Array.from({ length: n }, () => new Map());
-
-    // 첫 번째 위치
-    for (let v = expected[0] + 1; v <= expected[0] + LIMIT; v++) {
-        if (v % k === 0) {
-            dp[0].set(v, [v]);  // v를 선택했을 때 현재까지의 경로
-        }
+    // 초기값 세팅
+    for (let i = 0; i < n; i++) {
+        const base = expected[i] % k === 0 ? expected[i] : (Math.floor(expected[i] / k) + 1) * k;
+        result.set(i, base);
     }
 
-    // 나머지 위치
-    for (let i = 1; i < n; i++) {
-        for (let [prevVal, path] of dp[i - 1].entries()) {
-            for (let delta of [-k, k]) {
-                const curVal = prevVal + delta;
-                if (curVal > expected[i] && curVal % k === 0) {
-                    const newPath = [...path, curVal];
-                    const oldPath = dp[i].get(curVal);
-                    const oldSum = oldPath ? oldPath.reduce((a, b) => a + b, 0) : Infinity;
-                    const newSum = newPath.reduce((a, b) => a + b, 0);
-                    if (!oldPath || newSum < oldSum) {
-                        dp[i].set(curVal, newPath);
-                    }
-                }
+    while (visited.includes(false)) {
+        const sorted = Array.from(result.entries()).sort((a, b) => a[1] - b[1]);
+
+        let maxIdx = -1;
+        let maxVal = -1;
+        for (let i = sorted.length - 1; i >= 0; i--) {
+            if (!visited[sorted[i][0]]) {
+                maxIdx = sorted[i][0];
+                maxVal = sorted[i][1];
+                break;
             }
         }
-    }
 
-    // 최소 합의 경로 선택
-    let minSum = Infinity;
-    let result = [];
+        for (let [idx, val] of result.entries()) {
+            if (idx === maxIdx - 1) {
+                let prevVal = val;
 
-    for (let [val, path] of dp[n - 1].entries()) {
-        const sum = path.reduce((a, b) => a + b, 0);
-        if (sum < minSum) {
-            minSum = sum;
-            result = path;
+                while (Math.abs(prevVal - maxVal) > k) {
+                    const minVal = Math.min(prevVal, maxVal);
+                    if (minVal === prevVal) {
+                        prevVal += k;
+                    } else {
+                        maxVal += k;
+                    }
+                }
+
+                result.set(idx, prevVal);
+                result.set(maxIdx, maxVal);
+            }
         }
+
+        visited[maxIdx] = true;
     }
 
-    return result.length ? result : null;  // 없으면 null
+    const answer = Array(n).fill(0);
+    for (let [i, val] of result.entries()) {
+        answer[i] = val;
+    }
+
+    return answer;
 }
 
-// 테스트 예시
 const n = 5;
-const k = 3;
-const expected = [1, 7, 10, 9, 8];
-console.log(solution(n, k, expected));  // 예: [3, 9, 12, 6, 9]
+const k = 4;
+const expected = [1, 1, 1, 1, 1];
+console.log(solution(n, k, expected));  // 예: [6, 9, 12, 12, 9]
