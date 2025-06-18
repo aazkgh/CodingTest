@@ -19,7 +19,7 @@ var combine = function(n, k) {
                     backtracking(curr);
                     curr.pop();
                 }
-;            }
+            }
         }
     };
 
